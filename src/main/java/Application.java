@@ -138,7 +138,7 @@ public class Application {
 
         while (true) {
             // Gets the name of the first person
-            System.out.print("Person1: ");
+            System.out.print("Person: ");
             String person = sc.nextLine();
             source = family.getMember(person);
             if (source == null) {
@@ -152,7 +152,7 @@ public class Application {
 
         while (true) {
             // Gets the name of the second person
-            System.out.print("Person2: ");
+            System.out.print("Relation: ");
             String relation = sc.nextLine();
             dest = family.getMember(relation);
             if (dest == null) {
