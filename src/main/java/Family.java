@@ -44,7 +44,7 @@ public class Family {
         Marriage marriage;
 
         if (spouse1.getGender().equals(Gender.FEMALE)) {
-            // As it is marriage(husband,wife) so we change order
+            // As the constructor is marriage(husband,wife) so we change order
             marriage = new Marriage(spouse2, spouse1);
         } else {
             marriage = new Marriage(spouse1, spouse2);
@@ -62,7 +62,7 @@ public class Family {
     public List<Person> getMotherWithMostDaughters() {
 
         List<Person> mothersWithMostDaughters = new ArrayList<Person>();
-        int maxDaughters = 0;
+        int maxDaughters = 0; //Example: 4
 
         for (Person member : familyTree.values()) {
 
@@ -90,33 +90,33 @@ public class Family {
     }
 
     //Problem - Use BFS to find the shortest path of relations from source person to destination person
-    public String getShortestRelation(Person source, Person dest) {
+    public String getShortestRelation(Person sourcePerson, Person destPerson) {
 
         Map<Person, Boolean> isVisited = new HashMap<Person, Boolean>();
         Map<Person, Relation> path = new HashMap<Person, Relation>();
 
         Queue<Person> personQueue = new LinkedList<Person>();
 
-        // Initialise the isVisited to false
+        // Initialise the isVisited to false for everyone in family
         for (Person p : familyTree.values()) {
             isVisited.put(p, false);
         }
 
         //Add source node to queue
-        personQueue.add(source);
-        isVisited.put(source, true);
+        personQueue.add(sourcePerson);
+        isVisited.put(sourcePerson, true);
 
         // Find path while the person queue is not empty
         while (!personQueue.isEmpty()) {
             // Get the current person
-            Person current = personQueue.remove();
+            Person currentPerson = personQueue.remove();
 
             // The loop breaks once we reach the person2 from person1
-            if (current.equals(dest))
+            if (currentPerson.equals(destPerson))
                 break;
 
             // Look at current person's neighbours
-            List<Relation> relations = current.getRelations();
+            List<Relation> relations = currentPerson.getRelations();
 
             for (Relation relation : relations) {
 
@@ -125,10 +125,10 @@ public class Family {
                     ParentChild parentChildRelation = (ParentChild) relation;
 
                     // If current person is a parent, add the child to personQueue
-                    if (parentChildRelation.getParent().equals(current)) {
+                    if (parentChildRelation.getParent().equals(currentPerson)) {
                         // Process the child
                         processPersonInQueue(parentChildRelation.getChild(), relation, isVisited, path, personQueue);
-                    } else if (((ParentChild) relation).getChild().equals(current)) {
+                    } else if (((ParentChild) relation).getChild().equals(currentPerson)) {
                         // If person is a child, add the parent to personQueue
                         processPersonInQueue(((ParentChild) relation).getParent(), relation, isVisited, path, personQueue);
                     }
@@ -137,10 +137,10 @@ public class Family {
                     Marriage marriageRelation = (Marriage) relation;
 
                     // If current person is a spouse
-                    if (marriageRelation.getHusband().equals(current)) {
+                    if (marriageRelation.getHusband().equals(currentPerson)) {
                         // Add the wife to personQueue
                         processPersonInQueue(((Marriage) relation).getWife(), relation, isVisited, path, personQueue);
-                    } else if (marriageRelation.getWife().equals(current)) {
+                    } else if (marriageRelation.getWife().equals(currentPerson)) {
                         // Add the husband to personQueue
                         processPersonInQueue(((Marriage) relation).getHusband(), relation, isVisited, path, personQueue);
                     }
@@ -149,26 +149,26 @@ public class Family {
         }
 
         // Now we know the path between the two people
-        List<RelationType> relationList = getRelationListFromPath(path, source, dest);
+        List<RelationType> relationList = getRelationListFromPath(path, sourcePerson, destPerson);
         // Name the relationship between the two people
         return getRelationshipName(relationList);
 
     }
 
-    private void processPersonInQueue(Person p, Relation relation, Map<Person, Boolean> isVisited, Map<Person, Relation> path, Queue<Person> personQueue) {
-        if (!isVisited.get(p)) {
-            personQueue.add(p);
-            isVisited.put(p, true);
-            path.put(p, relation);
+    private void processPersonInQueue(Person person, Relation relation, Map<Person, Boolean> isVisited, Map<Person, Relation> path, Queue<Person> personQueue) {
+        if (!isVisited.get(person)) {
+            personQueue.add(person);
+            isVisited.put(person, true);
+            path.put(person, relation);
         }
     }
 
-    private List<RelationType> getRelationListFromPath(Map<Person, Relation> path, Person source, Person dest) {
+    private List<RelationType> getRelationListFromPath(Map<Person, Relation> path, Person sourcePerson, Person destPerson) {
 
         List<RelationType> relationList = new ArrayList<RelationType>();
 
         //Generate list of relations from path from destination to source
-        for (Person person = dest; person != source; ) {
+        for (Person person = destPerson; person != sourcePerson; ) {
 
             if (path.get(person).getClass() == ParentChild.class) {
 

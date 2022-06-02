@@ -20,7 +20,7 @@ public class Application {
 
         if (fileName != null) {
             // Parses the entire input file and returns true when done
-            // Creating a family tree
+            // creating a family tree
             readFile = parseInputFile(fileName);
         }
         if (readFile) {
@@ -85,7 +85,7 @@ public class Application {
             String person = sc.nextLine();
             parent = family.getMember(person);
             if (parent == null) {
-                System.out.println("Person does not exist in the family. Going back to main menu.");
+                System.out.println("Parent does not exist in the family. Going back to main menu.");
                 System.out.println();
                 return;
             } else {
@@ -124,7 +124,7 @@ public class Application {
             }
         }
 
-        // Adds child to family
+        // Adds new person (child) to family
         Person child = new Person(childName, childGender);
         family.addChild(parent, child);
         System.out.println("Child has been added to the family.");
@@ -154,6 +154,7 @@ public class Application {
             // Gets the name of the second person
             System.out.print("Relation: ");
             String relation = sc.nextLine();
+            // Get the destination person
             dest = family.getMember(relation);
             if (dest == null) {
                 System.out.println("Relation does not exist in the family. Going back to main menu.");
@@ -177,7 +178,9 @@ public class Application {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
             String line = "";
 
+            // reads the file line by line
             while ((line = bufferedReader.readLine()) != null) {
+                // Checks for the prefixes
                 String personPrefix = "PERSON:";
                 String childPrefix = "CHILD:";
                 String marriagePrefix = "SPOUSE:";
